@@ -72,7 +72,7 @@ netsh.exe trace stop
 
 * PKTMON.EXE
 ```
-pktmon.exe** filter add SMB -p 445
+pktmon.exe filter add SMB -p 445
 :: List all filters 
 pktmon.exe filter list
 :: Find id of the network adapter (example > Id: 9)
