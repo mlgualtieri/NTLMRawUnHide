@@ -378,7 +378,7 @@ def main(argv):
 
     # Check to make sure infile exists
     if os.path.exists(infile) == False:
-        print("Error: File not found")
+        print("Error: File not found.  Did you mean to specify -i?")
         sys.exit()
 
 
