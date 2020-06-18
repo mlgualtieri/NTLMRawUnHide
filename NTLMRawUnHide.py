@@ -273,7 +273,7 @@ def searchCaptureFile(infile, outfile, verbose, follow, quiet, offset = 0):
 
 # Can a tool be a tool without ASCII Art?
 def banner():
-    # Start bold yellow
+    # Start yellow
     print('\033[0;93m                                                              /%(')
     print('                               -= Find NTLMv2 =-          ,@@@@@@@@&')
     print('           /%&@@@@&,            -= hashes w/ =-          %@@@@@@@@@@@*')
@@ -376,9 +376,15 @@ def main(argv):
             sys.exit(2)
 
 
-    # Check to make sure infile exists
+    # Check to make sure input file is specified
+    if infile == "":
+        print("\033[1;31m[!]\033[0;97m Error: Input file not specified.  Did you mean to specify -i?")
+        sys.exit()
+
+
+    # Check to make sure input file exists
     if os.path.exists(infile) == False:
-        print("Error: File not found.  Did you mean to specify -i?")
+        print("\033[1;31m[!]\033[0;97m Error: Input file not found.")
         sys.exit()
 
 
