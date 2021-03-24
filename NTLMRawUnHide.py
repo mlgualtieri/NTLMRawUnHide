@@ -51,11 +51,9 @@ import os.path
 from os import path
 
 
-
-# The decode_string() function was taken from: 
-# https://github.com/b17zr/ntlm_challenger
+# Decode unicode string (UTF-16 on Windows)
 def decode_string(byte_string):
-    return byte_string.decode('UTF-8').replace('\x00', '')
+    return byte_string.decode('utf-16le')
 
 
 # The decode_int() function was taken from: 
@@ -186,23 +184,6 @@ def searchCaptureFile(infile, outfile, verbose, follow, quiet, offset = 0):
                     print("      Username offset        :", username_offset)
                     print()
     
-            # Find workstation
-            workstation_length_raw = readbuff[(offset+44):(offset+44+2)]
-            workstation_length     = decode_int(workstation_length_raw)
-    
-            workstation_offset_raw = readbuff[(offset+44+2+2):(offset+44+2+2+4)]
-            workstation_offset     = decode_int(workstation_offset_raw)
-    
-            workstation = readbuff[(offset + workstation_offset):(offset + workstation_offset + workstation_length)]
-
-            if quiet == False:
-                print("    \033[1;34m>\033[1;37m Workstation            :\033[0;97m", decode_string(workstation),'\033[0;37m')
-
-                if verbose == True:
-                    print("      Workstation length     :", workstation_length)
-                    print("      Workstation offset     :", workstation_offset)
-                    print()
-    
     
             # Find NTLM response
             ntlm_length_raw = readbuff[(offset+20):(offset+20+2)]
@@ -232,14 +213,9 @@ def searchCaptureFile(infile, outfile, verbose, follow, quiet, offset = 0):
                 if ntlm_length == 0:
                     if quiet == False:
                         print("\033[0;37mNTLM NULL session found... no hash to generate\033[0;37m")
-                elif domain_length == 0:
-                    hash_out = decode_string(username) +"::"+ decode_string(workstation) +":"+ server_challenge.hex() +":"+ ntproofstr.hex() +":"+ ntlmv2_response.hex()
-
-                    print(hash_out)
-                    if outfile != '':
-                        writeOutfile(output, hash_out)
                 else:
-                    hash_out = decode_string(domain) +"\\"+ decode_string(username) +"::"+ decode_string(workstation) +":"+ server_challenge.hex() +":"+ ntproofstr.hex() +":"+ ntlmv2_response.hex()
+                    # Domain can be empty, in which case we'll get `username:::server_challenge:ntproofstr:ntlmv2_response`
+                    hash_out = decode_string(username) +"::"+ decode_string(domain) +":"+ server_challenge.hex() +":"+ ntproofstr.hex() +":"+ ntlmv2_response.hex()
                     print(hash_out)
                     if outfile != '':
                         writeOutfile(outfile, hash_out)
