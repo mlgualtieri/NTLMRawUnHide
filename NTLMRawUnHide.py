@@ -237,7 +237,7 @@ def searchCaptureFile(infile, outfile, verbose, follow, quiet, offset = 0):
 
                     print(hash_out)
                     if outfile != '':
-                        writeOutfile(output, hash_out)
+                        writeOutfile(outfile, hash_out)
                 else:
                     hash_out = decode_string(username) +"::"+ decode_string(domain) +":"+ server_challenge.hex() +":"+ ntproofstr.hex() +":"+ ntlmv2_response.hex()
                     print(hash_out)
